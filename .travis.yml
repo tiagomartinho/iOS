@@ -3,5 +3,8 @@ osx_image: xcode9
 cache:
   directories:
   - Carthage
+before_install:
+  - brew install phantomjs
 script:
+  - ./run_content_blocking_tests.sh
   - ./run_tests.sh

@@ -1,0 +1,38 @@
+<html>
+<head>
+
+</head>
+<body>
+
+    <h1>Content Blocking Test Suite</h1>
+
+    <div id="test-results"></div>
+
+
+    <!-- Mocks -->
+    <script src="mock_webkit.js"></script>
+    <script src="mock_data.js"></script>
+    <script src="mock_abp.js"></script>
+    <script src="mock_tlds.js"></script>
+
+    <!-- dependencies -->
+    <script src="../Core/messaging.js"></script>
+    <script src="../Core/disconnectme.js"></script>
+
+    <!-- under test -->
+    <script src="../Core/contentblocker.js"></script>
+
+    <!-- test runner -->
+    <script src="testrunner.js"></script>    
+    <script src="testresults.js"></script>
+
+    <!-- test suite -->
+    <script src="contentblocking_tests.js"></script>
+
+    <script>
+    runSuite()
+    renderResults()
+    </script>
+
+</body>
+</html>
