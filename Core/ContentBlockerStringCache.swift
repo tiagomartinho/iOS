@@ -29,8 +29,7 @@ public class ContentBlockerStringCache {
 
     private var cacheDir: URL {
         get {
-            let groupName = ContentBlockerStoreConstants.groupName
-            return fileManager.containerURL(forSecurityApplicationGroupIdentifier: groupName)!.appendingPathComponent("string-cache")
+            return appDocPath.appendingPathComponent("string-cache")
         }
     }
 

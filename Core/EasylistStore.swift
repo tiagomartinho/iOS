@@ -94,8 +94,7 @@ class EasylistStore {
     }
 
     private func persistenceLocation(type: Easylist) -> URL {
-        let path = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ContentBlockerStoreConstants.groupName)
-        return path!.appendingPathComponent("\(type.rawValue).txt")
+        return appDocPath.appendingPathComponent("\(type.rawValue).txt")
     }
 
     private func invalidateCache(named name: String) {

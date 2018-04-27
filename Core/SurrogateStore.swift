@@ -38,8 +38,7 @@ class SurrogateStore {
     }
     
     private func persistenceLocation() -> URL {
-        let path = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: groupIdentifier)
-        return path!.appendingPathComponent("surrogate.js")
+        return appDocPath.appendingPathComponent("surrogate.js")
     }
 
 }

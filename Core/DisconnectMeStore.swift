@@ -95,8 +95,7 @@ public class DisconnectMeStore {
     }
     
     public var persistenceLocation: URL {
-        let path = FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: ContentBlockerStoreConstants.groupName)
-        return path!.appendingPathComponent("disconnectme.json")
+        return appDocPath.appendingPathComponent("disconnectme.json")
     }
 }
 
