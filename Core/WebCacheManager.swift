@@ -54,13 +54,30 @@ public class WebCacheManager {
      Clears the cache of all external (non-duckduckgo) data
      */
     public static func clear(completionHandler: @escaping () -> Void) {
+        print("***", allData)
+
         dataStore.fetchDataRecords(ofTypes: allData) { records in
-            let externalRecords = records.filter { $0.displayName != Constants.internalCache }
-            dataStore.removeData(ofTypes: allData, for: externalRecords) {
-                Logger.log(text: "External cache cleared")
-                completionHandler()
+            let externalRecords = records // .filter { $0.displayName != Constants.internalCache }
+
+            for record in externalRecords {
+                print("***", record.displayName, record.dataTypes)
+
+                dataStore.removeData(ofTypes: allData, for: [record]) {
+                    print("***", record.displayName, "cleared")
+                }
+
             }
+
+//            dataStore.removeData(ofTypes: allData, modifiedSince: Date(timeIntervalSince1970: 0.0)) {
+//                print("all data removed")
+//            }
+
+//            dataStore.removeData(ofTypes: allData, for: externalRecords) {
+//                Logger.log(text: "External cache cleared")
+//                completionHandler()
+//            }
         }
+
     }
 }
     
