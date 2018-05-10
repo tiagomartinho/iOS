@@ -22,18 +22,8 @@ import WebKit
 extension WKWebViewConfiguration {
 
     public static func persistent() -> WKWebViewConfiguration {
-        return configuration(persistsData: true)
-    }
-    
-    public static func nonPersistent() -> WKWebViewConfiguration {
-        return configuration(persistsData: false)
-    }
-    
-    private static func configuration(persistsData: Bool) -> WKWebViewConfiguration {
         let configuration = WKWebViewConfiguration()
-        if !persistsData {
-            configuration.websiteDataStore = WKWebsiteDataStore.nonPersistent()
-        }
+
         if #available(iOSApplicationExtension 10.0, *) {
             configuration.dataDetectorTypes = [.link, .phoneNumber]
         }

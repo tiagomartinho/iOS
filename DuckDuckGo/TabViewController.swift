@@ -80,6 +80,31 @@ class TabViewController: WebViewController {
         resetNavigationBar()
     }
 
+    private func applyDDGCookies() {
+        print("***", #function)
+
+        if #available(iOS 11, *) {
+            print("***", #function, "iOS 11", WebCacheManager.ddgCookies.count)
+
+            guard WebCacheManager.ddgCookies.count > 0 else {
+                print("*** no cookies")
+                return
+            }
+
+            let semaphore = DispatchSemaphore(value: WebCacheManager.ddgCookies.count)
+            for cookie in WebCacheManager.ddgCookies.values {
+                webView.configuration.websiteDataStore.httpCookieStore.setCookie(cookie) {
+                    print("*** cookie set", cookie.name, cookie.value)
+                    semaphore.signal()
+                }
+            }
+
+            semaphore.wait()
+            print("***", #function, "semaphore complete")
+        }
+
+    }
+
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
 
         guard let chromeDelegate = chromeDelegate else { return }
@@ -419,6 +444,8 @@ extension TabViewController: WKScriptMessageHandler {
 extension TabViewController: WebEventsDelegate {
     
     func attached(webView: WKWebView) {
+        applyDDGCookies()
+
         webView.configuration.userContentController.add(self, name: MessageHandlerNames.trackerDetected)
         webView.configuration.userContentController.add(self, name: MessageHandlerNames.cache)
         webView.configuration.userContentController.add(self, name: MessageHandlerNames.log)

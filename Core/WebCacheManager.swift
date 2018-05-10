@@ -22,6 +22,8 @@ import WebKit
 
 public class WebCacheManager {
 
+    public static var ddgCookies = [String: HTTPCookie]()
+
     private struct Constants {
         static let internalCache = "duckduckgo.com"
     }
@@ -33,51 +35,27 @@ public class WebCacheManager {
     private static var dataStore: WKWebsiteDataStore {
         return WKWebsiteDataStore.default()
     }
-    
-    /**
-     Provides a summary of the external (non-duckduckgo) cached data
-     */
-    public static func summary(completionHandler: @escaping (_ summary: WebCacheSummary) -> Void) {
-         dataStore.fetchDataRecords(ofTypes: allData, completionHandler: { records in
-            let count = records.reduce(0) { (count, record) in
-                if record.displayName == Constants.internalCache {
-                    return count
-                }
-                return count + record.dataTypes.count
-            }
-            Logger.log(text: String(format: "Web cache retrieved, there are %d items in the cache", count))
-            completionHandler(WebCacheSummary(count: count))
-        })
-    }
-    
+
     /**
      Clears the cache of all external (non-duckduckgo) data
      */
     public static func clear(completionHandler: @escaping () -> Void) {
         print("***", allData)
 
-        dataStore.fetchDataRecords(ofTypes: allData) { records in
-            let externalRecords = records // .filter { $0.displayName != Constants.internalCache }
-
-            for record in externalRecords {
-                print("***", record.displayName, record.dataTypes)
-
-                dataStore.removeData(ofTypes: allData, for: [record]) {
-                    print("***", record.displayName, "cleared")
+        if #available(iOS 11, *) {
+            dataStore.httpCookieStore.getAllCookies { cookies in
+                for cookie in cookies.filter({ $0.domain == Constants.internalCache }) {
+                    ddgCookies[cookie.name] = cookie
                 }
-
             }
+        }
 
-//            dataStore.removeData(ofTypes: allData, modifiedSince: Date(timeIntervalSince1970: 0.0)) {
-//                print("all data removed")
-//            }
-
-//            dataStore.removeData(ofTypes: allData, for: externalRecords) {
-//                Logger.log(text: "External cache cleared")
-//                completionHandler()
-//            }
+        dataStore.fetchDataRecords(ofTypes: allData) { records in
+            dataStore.removeData(ofTypes: allData, modifiedSince: Date(timeIntervalSince1970: 0.0)) {
+                print("*** all data removed")
+            }
         }
 
     }
+
 }
-    
