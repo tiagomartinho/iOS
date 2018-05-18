@@ -24,7 +24,7 @@
                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="5D5-iT-bUk">
                     <rect key="frame" x="8" y="4" width="321" height="40"/>
                     <subviews>
-                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Atk-JN-lv8" customClass="RoundedRectangleView" customModule="Core">
+                        <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="Atk-JN-lv8" customClass="RoundedRectangleView" customModule="DuckDuckGo" customModuleProvider="target">
                             <rect key="frame" x="0.0" y="0.0" width="321" height="40"/>
                             <color key="backgroundColor" red="0.33333333329999998" green="0.33333333329999998" blue="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                             <userDefinedRuntimeAttributes>
@@ -144,7 +144,7 @@
             <gestureRecognizers/>
             <constraints>
                 <constraint firstItem="5D5-iT-bUk" firstAttribute="leading" secondItem="RdS-eI-aOp" secondAttribute="leading" constant="8" id="FGr-mp-PlT"/>
-                <constraint firstAttribute="bottom" secondItem="5D5-iT-bUk" secondAttribute="bottom" constant="8" id="JTa-RA-Isu"/>
+                <constraint firstAttribute="bottom" secondItem="5D5-iT-bUk" secondAttribute="bottom" priority="750" constant="8" id="JTa-RA-Isu"/>
                 <constraint firstItem="1rB-5w-de3" firstAttribute="centerY" secondItem="N6K-Lj-Fn6" secondAttribute="centerY" id="Z2r-9H-b4u"/>
                 <constraint firstItem="5D5-iT-bUk" firstAttribute="top" secondItem="ojX-nM-dyN" secondAttribute="top" constant="4" id="oce-E1-4Nw"/>
                 <constraint firstItem="RdS-eI-aOp" firstAttribute="trailing" secondItem="5D5-iT-bUk" secondAttribute="trailing" priority="750" constant="8" id="tY7-iY-5EI"/>

@@ -17,6 +17,7 @@
 //  limitations under the License.
 //
 
+import UIKit
 
 @IBDesignable
 class TextFieldWithInsets: UITextField {

@@ -95,7 +95,7 @@ class OmniBar: UIView {
         setVisibility(menuButton, hidden: !state.showMenu)
         setVisibility(bookmarksButton, hidden: !state.showBookmarks)
         setVisibility(settingsButton, hidden: !state.showSettings)
-        searchContainerToSettingsConstraint.priority = state.showSettings ? .defaultHigh : .defaultLow
+        // searchContainerToSettingsConstraint.priority = state.showSettings ? .defaultHigh : .defaultLow
     }
     
     /*

@@ -19,7 +19,7 @@
 
 
 import XCTest
-@testable import Core
+@testable import DuckDuckGo
 
 class InterfaceMeasurementTests: XCTestCase {
     

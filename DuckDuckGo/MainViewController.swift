@@ -24,20 +24,26 @@ import Core
 
 class MainViewController: UIViewController {
 
-    @IBOutlet weak var customNavigationBar: UIView!
     @IBOutlet weak var containerView: UIView!
     @IBOutlet weak var fireButton: UIBarButtonItem!
     @IBOutlet weak var backButton: UIBarButtonItem!
     @IBOutlet weak var forwardButton: UIBarButtonItem!
     @IBOutlet weak var tabsButton: UIBarButtonItem!
-    @IBOutlet weak var toolbar: UIToolbar!
-    @IBOutlet weak var navBarTop: NSLayoutConstraint!
-    @IBOutlet weak var toolbarBottom: NSLayoutConstraint!
-    
-    @IBOutlet weak var notificationContainer: UIView!
-    @IBOutlet weak var notificationContainerTop: NSLayoutConstraint!
-    @IBOutlet weak var notificationContainerHeight: NSLayoutConstraint!
-    
+
+//    @IBOutlet weak var navBarTop: NSLayoutConstraint!
+//    @IBOutlet weak var toolbarBottom: NSLayoutConstraint!
+//    @IBOutlet weak var notificationContainerTop: NSLayoutConstraint!
+//    @IBOutlet weak var notificationContainer: UIView!
+//    @IBOutlet weak var notificationContainerHeight: NSLayoutConstraint!
+
+    var toolbar: UIToolbar! {
+        return navigationController?.toolbar
+    }
+
+    var customNavigationBar: UIView! {
+        return navigationController?.navigationBar
+    }
+
     weak var notificationView: NotificationView?
     
     var omniBar: OmniBar!
@@ -66,6 +72,7 @@ class MainViewController: UIViewController {
         configureTabManager()
         loadInitialView()
         addLaunchTabNotificationObserver()
+
     }
 
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
@@ -115,6 +122,8 @@ class MainViewController: UIViewController {
     }
     
     fileprivate func attachHomeScreen()  {
+        navigationController?.hidesBarsOnSwipe = false
+
         removeHomeScreen()
 
         let controller = HomeViewController.loadFromStoryboard()
@@ -170,7 +179,7 @@ class MainViewController: UIViewController {
         loadViewIfNeeded()
         attachHomeScreen()
     }
-    
+
     fileprivate func loadQuery(_ query: String) {
         let queryUrl = appUrls.url(forQuery: query)
         loadUrl(queryUrl)
@@ -204,7 +213,10 @@ class MainViewController: UIViewController {
         removeHomeScreen()
         currentTab?.chromeDelegate = nil
         addToView(controller: tab)
-        tab.webView.scrollView.delegate = chromeManager
+        // tab.webView.scrollView.delegate = chromeManager
+        DispatchQueue.main.async { [weak self] in
+            self?.navigationController?.hidesBarsOnSwipe = true
+        }
         tab.chromeDelegate = self
     }
 
@@ -312,7 +324,7 @@ class MainViewController: UIViewController {
         super.viewDidLayoutSubviews()
         notificationView?.layoutSubviews()
         let height = notificationView?.frame.size.height ?? 0
-        notificationContainerHeight.constant = height    
+//        notificationContainerHeight.constant = height
     }
     
     func showNotification(title: String, message: String, dismissHandler: @escaping NotificationView.DismissHandler) {
@@ -321,13 +333,13 @@ class MainViewController: UIViewController {
         
         notificationView.setTitle(text: title)
         notificationView.setMessage(text: message)
-        notificationContainer.addSubview(notificationView)
-        notificationContainerTop.constant = -notificationView.frame.size.height
+//        notificationContainer.addSubview(notificationView)
+        // notificationContainerTop.constant = -notificationView.frame.size.height
         self.notificationView = notificationView
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
-            self.notificationContainerTop.constant = 0
-            self.notificationContainerHeight.constant = notificationView.frame.size.height
+            // self.notificationContainerTop.constant = 0
+//            self.notificationContainerHeight.constant = notificationView.frame.size.height
             UIView.animate(withDuration: 0.3) {
                 self.view.layoutIfNeeded()
             }
@@ -337,12 +349,12 @@ class MainViewController: UIViewController {
     
     func hideNotification() {
         
-        notificationContainerTop.constant = -(notificationView?.frame.size.height ?? 0)
-        notificationContainerHeight.constant = 0
+        // notificationContainerTop.constant = -(notificationView?.frame.size.height ?? 0)
+//        notificationContainerHeight.constant = 0
         UIView.animate(withDuration: 0.5, animations: {
             self.view.layoutIfNeeded()
         }, completion: { completed in
-            self.notificationContainerTop.constant = 0
+            // self.notificationContainerTop.constant = 0
             self.notificationView?.removeFromSuperview()
         })
         
@@ -378,52 +390,26 @@ extension MainViewController: BrowserChromeDelegate {
 
     func setBarsHidden(_ hidden: Bool, animated: Bool) {
         if hidden { hideKeyboard() }
-        
-        updateToolbarConstant(hidden)
-        updateNavBarConstant(hidden)
 
-        if animated {
-
-            self.view.layer.removeAllAnimations()
-
-            UIView.animate(withDuration: ChromeAnimationConstants.duration, delay: 0.0, options: .allowUserInteraction, animations: {
-                self.omniBar.alpha = hidden ? 0 : 1
-                self.toolbar.alpha = hidden ? 0 : 1
-                self.view.layoutIfNeeded()
-            }, completion: nil)
-
-        } else {
-            setNavigationBarHidden(hidden)
-            toolbar.alpha = hidden ? 0 : 1
-        }
+        navigationController?.setToolbarHidden(hidden, animated: animated)
+        navigationController?.setNavigationBarHidden(hidden, animated: animated)
 
     }
 
     func setNavigationBarHidden(_ hidden: Bool) {
-        if hidden { hideKeyboard() }
-        
-        updateNavBarConstant(hidden)
-        omniBar.alpha = hidden ? 0 : 1
+        if hidden {
+            hideKeyboard()
+        }
+
+        navigationController?.setNavigationBarHidden(hidden, animated: false)
     }
 
     var isToolbarHidden: Bool {
-        get { return toolbar.alpha < 1 }
+        get { return navigationController?.isToolbarHidden ?? true }
     }
 
     var toolbarHeight: CGFloat {
         get { return toolbar.frame.size.height }
-    }
-
-    private func updateToolbarConstant(_ hidden: Bool) {
-        var bottomHeight = self.toolbar.frame.size.height
-        if #available(iOS 11.0, *) {
-            bottomHeight += view.safeAreaInsets.bottom
-        }
-        toolbarBottom.constant = hidden ? bottomHeight : 0
-    }
-
-    private func updateNavBarConstant(_ hidden: Bool) {
-        navBarTop.constant = hidden ? -self.customNavigationBar.frame.size.height : 0
     }
 
 }

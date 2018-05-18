@@ -163,7 +163,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     private var mainViewController: MainViewController? {
-        return window?.rootViewController as? MainViewController
+        let initialController = window?.rootViewController as! UINavigationController
+        return initialController.viewControllers[0] as? MainViewController
     }
     
     private func clearNavigationStack() {
